@@ -26,8 +26,15 @@ login = async (username, password) => {
   }
   if (!valid) throw new Error("Password noto'g'ri");
 
-  const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: "15m" });
-  return token;
+  const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: "1h" });
+  return {
+    token,
+    user: {
+      username: user.username,
+      role: user.role,
+      banned: user.banned
+    }
+  };
 };
 
 
@@ -47,5 +54,15 @@ async function getUserById(id){
     return result.rows
 }
 
+async function createUser(user) {
+  const result = await db.query(
+    `INSERT INTO users (username, password, role, banned)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [user.username, user.password, user.role, false]
+  );
+  return result.rows[0];
+}
 
-module.exports = {getUser, getUserById, login}
+
+module.exports = {getUser, getUserById, login, createUser}

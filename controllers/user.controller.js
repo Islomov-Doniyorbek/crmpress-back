@@ -1,4 +1,4 @@
-const userService  =require('../services/user.service')
+const userService =require('../services/user.service')
 
 
 
@@ -8,8 +8,12 @@ async function login(req, res){
     
 
     try{
-        const token = await userService.login(username, password)
-        res.json({token})
+        const result = await userService.login(username, password)
+        
+        res.json({
+            token: result.token,
+            user: result.user
+        })
     }catch(Err){
         res.json({
             message: Err.message
@@ -49,4 +53,22 @@ async function getUserById(req, res){
     }
 }
 
-module.exports = {getUsers, getUserById, login}
+async function createUser(req, res) {
+    try{
+        const user = req.body;
+
+        const newuser = userService.createUser(user);
+        res.json({
+            message: "User created successfull",
+            newUser: newuser
+        })
+    }catch(err){
+        console.log(err);
+        
+        res.json({
+            message: err.message
+        }).status(500)
+    }
+}
+
+module.exports = {getUsers, getUserById, login, createUser}

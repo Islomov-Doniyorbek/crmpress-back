@@ -14,6 +14,8 @@ module.exports = function (req, res, next) {
   try {
     const decoded = jwt.verify(token, SECRET);
     req.user = decoded;
+    console.log(decoded);
+    
     next();
   } catch (err) {
     if(err.name === 'TokenExpiredError'){
