@@ -52,23 +52,47 @@ async function getUserById(req, res){
         })
     }
 }
+const createUser = async (req, res) => {
+  try {
+    const user = await userService.createUser(req.body);
 
-async function createUser(req, res) {
-    try{
-        const user = req.body;
+    res.status(201).json(user);
+  } catch (err) {
+    console.log(err);
 
-        const newuser = userService.createUser(user);
-        res.json({
-            message: "User created successfull",
-            newUser: newuser
-        })
-    }catch(err){
-        console.log(err);
-        
-        res.json({
-            message: err.message
-        }).status(500)
+    if (err.code === '23505') {
+      return res.status(409).json({
+        message: 'Username allaqachon mavjud'
+      });
     }
-}
+
+    return res.status(500).json({
+      message: 'Server xatosi'
+    });
+  }
+};
+// async function createUser(req, res) {
+//     try{
+//         const user = req.body;
+
+//         const newuser = userService.createUser(user);
+//         console.log(newuser);
+        
+//         res.json({
+//             message: "User created successfull",
+//             newUser: newuser
+//         })
+//     }catch(err){
+//         console.log(err);
+//         if (err.code === '23505') {
+//         return res.status(409).json({
+//             message: 'Ushbu username avval ro\'yxatdan o\'tgan'
+//         });
+//     }
+//         res.json({
+//             message: err.message
+//         }).status(500)
+//     }
+// }
 
 module.exports = {getUsers, getUserById, login, createUser}

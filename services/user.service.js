@@ -55,13 +55,18 @@ async function getUserById(id){
 }
 
 async function createUser(user) {
-  const result = await db.query(
+  const hashedPassword = await bcrypt.hash(user.password, 10);
+  try{
+    const result = await db.query(
     `INSERT INTO users (username, password, role, banned)
      VALUES ($1, $2, $3, $4)
      RETURNING *`,
-    [user.username, user.password, user.role, false]
+    [user.username, hashedPassword, user.role, false]
   );
   return result.rows[0];
+  }catch(Err){
+    throw Err
+  }
 }
 
 
