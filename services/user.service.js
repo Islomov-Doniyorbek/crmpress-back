@@ -113,4 +113,14 @@ async function freeUser(id){
   
 }
 
-module.exports = {getUser, getUserById, login, createUser, deleteUser, banUser, freeUser}
+async function updateUser(id, username, email, role, password){
+  
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const result = await db.query(`
+    UPDATE users SET username=$1, password=$2, role=$3, banned=$4 WHERE=$5 RETURNING *`, [username, hashedPassword, role, banned])
+  
+    return result.rows[0];
+}
+
+module.exports = {getUser, getUserById, login, createUser, deleteUser, banUser, freeUser, updateUser}

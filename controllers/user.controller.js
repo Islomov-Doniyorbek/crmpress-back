@@ -106,4 +106,18 @@ const freeUser = async (req, res) => {
     return res.status(err.status || 404).json(err.message)
   }
 }
-module.exports = {getUsers, getUserById, login, createUser, deleteUser, banUser, freeUser}
+
+
+const updateUser = async (req, res) => {
+  try {
+    const result = await userService.updateUser(req.params.id, req.body.username, req.body.password, req.body.role, req.body.banned);
+
+    return res.status(200).json({
+      success: true,
+      updatedUser: result
+    })
+  }catch(err){
+    res.json(err)
+  }
+}
+module.exports = {getUsers, getUserById, login, createUser, deleteUser, banUser, freeUser, updateUser}
