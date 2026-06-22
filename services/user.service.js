@@ -10,21 +10,25 @@ login = async (username, password) => {
     `SELECT * FROM users WHERE username = $1`, [username]
   );
   const user = result.rows[0];
-  console.log(result);
-  console.log(result);
   
-  if (!user) throw new Error("User topilmadi");
-  console.log(user);
+  if (!user) {
+    const err = new Error("User not found");
+    err.status = 404;
+    throw err;
+  }
+  
   let valid = false;
   if (user.role === 'admin'){
       valid = user.password === password
-      console.log("admin");
       
     }else{
       valid = await bcrypt.compare(password, user.password);
-        console.log("user");
   }
-  if (!valid) throw new Error("Password noto'g'ri");
+  if (!valid) {
+    const err= new Error("Password noto'g'ri")
+    err.status = 401
+    throw err
+  };
 
   const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: "1h" });
   return {
@@ -69,5 +73,44 @@ async function createUser(user) {
   }
 }
 
+async function deleteUser(id) {
+  const result = await db.query(
+    `DELETE FROM users WHERE id=$1`,
+    [id]
+  );
 
-module.exports = {getUser, getUserById, login, createUser}
+  if (result.rowCount === 0) {
+    const err = new Error("Foydalanuvchi topilmadi");
+    err.status = 404;
+    throw err;
+  }
+
+  return result;
+}
+
+async function banUser(id){
+  const result = await db.query(
+    `UPDATE users SET banned=$1 WHERE id=$2`, [true, id]
+  )
+  if (result.rowCount === 0) {
+    const err = new Error("Foydalanuvchi topilmadi");
+    err.status = 404;
+    throw err;
+  }
+  return result;
+  
+}
+async function freeUser(id){
+  const result = await db.query(
+    `UPDATE users SET banned=$1 WHERE id=$2`, [false, id]
+  )
+  if (result.rowCount === 0) {
+    const err = new Error("Foydalanuvchi topilmadi");
+    err.status = 404;
+    throw err;
+  }
+  return result;
+  
+}
+
+module.exports = {getUser, getUserById, login, createUser, deleteUser, banUser, freeUser}

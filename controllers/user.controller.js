@@ -2,23 +2,19 @@ const userService =require('../services/user.service')
 
 
 
-async function login(req, res){
-    const {username, password} = req.body;
-    console.log(req.body);
-    
-
-    try{
-        const result = await userService.login(username, password)
-        
-        res.json({
-            token: result.token,
-            user: result.user
-        })
-    }catch(Err){
-        res.json({
-            message: Err.message
-        }).status(400)
-    }
+async function login(req, res) {
+  const { username, password } = req.body;
+  try {
+    const result = await userService.login(username, password);
+    res.json({
+      token: result.token,
+      user: result.user
+    });
+  } catch (err) {
+    res.status(err.status | 400).json({
+      message: err.message
+    });
+  }
 }
 
 
@@ -29,7 +25,6 @@ async function getUsers(req, res) {
             users,
             status: 200
         })
-        console.log(users);
     }
     catch(err){
         res.status(500).json({
@@ -71,28 +66,44 @@ const createUser = async (req, res) => {
     });
   }
 };
-// async function createUser(req, res) {
-//     try{
-//         const user = req.body;
 
-//         const newuser = userService.createUser(user);
-//         console.log(newuser);
-        
-//         res.json({
-//             message: "User created successfull",
-//             newUser: newuser
-//         })
-//     }catch(err){
-//         console.log(err);
-//         if (err.code === '23505') {
-//         return res.status(409).json({
-//             message: 'Ushbu username avval ro\'yxatdan o\'tgan'
-//         });
-//     }
-//         res.json({
-//             message: err.message
-//         }).status(500)
-//     }
-// }
+const deleteUser = async (req, res) => {
+  try {
+    const result = await userService.deleteUser(req.params.id);
 
-module.exports = {getUsers, getUserById, login, createUser}
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+
+  } catch (err) {
+    return res.status(err.status || 500).json({
+      message: err.message
+    });
+  }
+};
+
+const banUser = async (req, res) => {
+  try {
+    const result = await userService.banUser(req.params.id)
+
+    return res.status(200).json({
+      success: true,
+    });
+  }catch(err){
+    return res.status(err.status || 404).json(err.message)
+  }
+}
+const freeUser = async (req, res) => {
+  try {
+    const result = await userService.freeUser(req.params.id)
+
+    return res.status(200).json({
+      success: true,
+      message: "User spamdan chiqarildi"
+    });
+  }catch(err){
+    return res.status(err.status || 404).json(err.message)
+  }
+}
+module.exports = {getUsers, getUserById, login, createUser, deleteUser, banUser, freeUser}
