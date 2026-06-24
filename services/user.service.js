@@ -59,6 +59,13 @@ async function getUserById(id){
 }
 
 async function createUser(user) {
+  console.log(user);
+  
+  if(!(user.username && user.password && user.role)){
+    const err = new Error("Ma'lumotlar to'liq emas")
+    err.status = 423
+    throw err
+  }
   const hashedPassword = await bcrypt.hash(user.password, 10);
   try{
     const result = await db.query(
@@ -66,10 +73,12 @@ async function createUser(user) {
      VALUES ($1, $2, $3, $4)
      RETURNING *`,
     [user.username, hashedPassword, user.role, false]
-  );
-  return result.rows[0];
-  }catch(Err){
-    throw Err
+    );
+    return result.rows[0];
+  }catch(err){
+    console.log(err);
+    
+    throw err
   }
 }
 

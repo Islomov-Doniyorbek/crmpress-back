@@ -61,8 +61,8 @@ const createUser = async (req, res) => {
       });
     }
 
-    return res.status(500).json({
-      message: 'Server xatosi'
+    return res.status(err.status || 500).json({
+      message: err.message || 'Server xatosi'
     });
   }
 };
