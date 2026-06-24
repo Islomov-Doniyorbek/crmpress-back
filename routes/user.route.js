@@ -11,6 +11,6 @@ router.post('/user/create', createUser)
 router.delete('/user/delete/:id', deleteUser)
 router.patch('/user/ban/:id', banUser)
 router.patch('/user/free/:id', freeUser)
-router.put('user/update/:id', updateUser)
+router.put('/user/update/:id', updateUser)
 
 module.exports = router

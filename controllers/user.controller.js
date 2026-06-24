@@ -111,10 +111,10 @@ const freeUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const result = await userService.updateUser(req.params.id, req.body.username, req.body.password, req.body.role, req.body.banned);
-
+    console.log(result);
+    
     return res.status(200).json({
-      success: true,
-      updatedUser: result
+      result
     })
   }catch(err){
     res.json(err)

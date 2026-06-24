@@ -124,12 +124,29 @@ async function freeUser(id){
 
 async function updateUser(id, username, email, role, password){
   
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const result = await db.query(`
-    UPDATE users SET username=$1, password=$2, role=$3, banned=$4 WHERE=$5 RETURNING *`, [username, hashedPassword, role, banned])
+  // console.log(id);
+  // const result = await db.query(`
+  //   UPDATE users SET username=$1, role=$2, banned=$3 WHERE id=$4 RETURNING *`, [username, role, banned, id])
+    
+  //   console.log(result);
   
-    return result.rows[0];
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+  console.log('Query:', [username, hashedPassword, role, banned, id])
+    const result = await db.query(`
+      UPDATE users SET username=$1, password=$2, role=$3 WHERE id=$4 RETURNING *`, [username, hashedPassword, role, id])
+      console.log(result);
+      
+      return result.rows[0];
+      
+    }else{
+      console.log('Query:', [username, role, id])
+      const result = await db.query(`
+        UPDATE users SET username=$1, role=$2 WHERE id=$3 RETURNING *`, [username, role, id])
+        
+        console.log(result);
+      return result.rows[0];
+  }
 }
 
 module.exports = {getUser, getUserById, login, createUser, deleteUser, banUser, freeUser, updateUser}
