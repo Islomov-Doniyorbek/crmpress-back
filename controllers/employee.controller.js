@@ -27,4 +27,20 @@ async function createEmployee(req, res) {
     }
 }
 
-module.exports = {getEmployees, createEmployee}
+const deleteUser = async (req, res) => {
+  try {
+    const result = await employeeService.deleteUser(req.params.id);
+
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+
+  } catch (err) {
+    return res.status(err.status || 500).json({
+      message: err.message
+    });
+  }
+};
+
+module.exports = {getEmployees, createEmployee, deleteUser}

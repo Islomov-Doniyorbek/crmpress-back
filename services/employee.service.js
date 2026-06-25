@@ -21,4 +21,19 @@ async function createEmployee(empl) {
     return result.rows[0]
 }
 
-module.exports = {getEmployees, createEmployee}
+async function deleteUser(id) {
+  const result = await db.query(
+    `DELETE FROM employee WHERE id=$1`,
+    [id]
+  );
+
+  if (result.rowCount === 0) {
+    const err = new Error("Xodim topilmadi");
+    err.status = 404;
+    throw err;
+  }
+
+  return result;
+}
+
+module.exports = {getEmployees, createEmployee, deleteUser}
