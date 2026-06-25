@@ -9,4 +9,16 @@ async function getEmployees()
     return result.rows
 }
 
-module.exports = {getEmployees}
+
+async function createEmployee(empl) {
+    const result = await db.query(
+    `INSERT INTO employee (user_id, name, email, status, role)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING *`, [empl.user_id, empl.name, empl.email, empl.status, empl.role]
+    )
+    console.log(result);
+    
+    return result.rows[0]
+}
+
+module.exports = {getEmployees, createEmployee}

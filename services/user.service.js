@@ -34,6 +34,7 @@ login = async (username, password) => {
   return {
     token,
     user: {
+      id: user.id,
       username: user.username,
       role: user.role,
       banned: user.banned
