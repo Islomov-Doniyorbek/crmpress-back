@@ -27,7 +27,7 @@ async function createEmployee(req, res) {
     }
 }
 
-const deleteUser = async (req, res) => {
+const deleteEmployee = async (req, res) => {
   try {
     const result = await employeeService.deleteUser(req.params.id);
 
@@ -43,4 +43,17 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = {getEmployees, createEmployee, deleteUser}
+const updateEmployee = async (req, res) => {
+  try {
+    const result = await employeeService.updateEmployee(req.params.id, req.body.name, req.body.email, req.body.status, req.body.role);
+    console.log(result);
+    
+    return res.status(200).json({
+      result
+    })
+  }catch(err){
+    res.json(err)
+  }
+}
+
+module.exports = {getEmployees, createEmployee, deleteEmployee, updateEmployee}

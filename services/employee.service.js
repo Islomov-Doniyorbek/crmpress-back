@@ -21,7 +21,7 @@ async function createEmployee(empl) {
     return result.rows[0]
 }
 
-async function deleteUser(id) {
+async function deletEmployee(id) {
   const result = await db.query(
     `DELETE FROM employee WHERE id=$1`,
     [id]
@@ -36,4 +36,16 @@ async function deleteUser(id) {
   return result;
 }
 
-module.exports = {getEmployees, createEmployee, deleteUser}
+
+async function updateEmployee(id, name, email, status, role){
+  
+  console.log('Query:', [name, email, role, status, id])
+    const result = await db.query(`
+      UPDATE employee SET name=$1, email=$2, status=$3, role=$4 WHERE id=$5 RETURNING *`, [name, email, status, role, id])
+      
+      
+      return result.rows[0];
+      
+}
+
+module.exports = {getEmployees, createEmployee, deletEmployee, updateEmployee}
