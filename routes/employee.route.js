@@ -3,8 +3,9 @@ const router = express.Router()
 
 const employeeService = require('../services/employee.service')
 const { getEmployees, createEmployee, deleteEmployee, updateEmployee } = require('../controllers/employee.controller')
+const authMiddleware = require('../middleware/auth.middleware')
 
-router.get('/employees', getEmployees)
+router.get('/employees', authMiddleware, getEmployees)
 router.post('/employee/create', createEmployee)
 router.delete('/employee/delete/:id', deleteEmployee)
 router.put('/employee/update/:id', updateEmployee)

@@ -2,7 +2,8 @@ const employeeService = require('../services/employee.service')
 
 async function getEmployees(req, res) {
     try {
-        const employees = await employeeService.getEmployees()
+        const userId = req.user.id
+        const employees = await employeeService.getEmployees(userId)
         res.json({
             employees,
             status: 200

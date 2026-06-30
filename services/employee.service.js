@@ -1,9 +1,9 @@
 const db = require('../db')
 
-async function getEmployees()
+async function getEmployees(userId)
 {
     const result = await db.query(
-        'SELECT * FROM employee'
+        'SELECT * FROM employee WHERE user_id =$1', [userId]
     );
 
     return result.rows
